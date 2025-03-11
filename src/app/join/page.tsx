@@ -2,8 +2,9 @@
 import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Head from 'next/head'
+import { Suspense } from 'react'
 
-export default function Join() {
+function Join() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
@@ -36,5 +37,13 @@ export default function Join() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function SuspenseWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <Join />
+    </Suspense>
   )
 }
