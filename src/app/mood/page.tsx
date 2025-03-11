@@ -352,7 +352,7 @@ export default function Mood() {
                 Seu código:
               </p>
               <p className="font-mono text-sm bg-gray-100 p-1 rounded">
-                {user.id}
+                {localStorageKeys.userCode ?? user.id}
               </p>
             </div>
             {partner.code && (
@@ -361,7 +361,7 @@ export default function Mood() {
                   Código do parceiro:
                 </p>
                 <p className="font-mono text-sm bg-gray-100 p-1 rounded">
-                  {partner.code}
+                  {localStorageKeys.userCode ?? user.id}
                 </p>
               </div>
             )}
