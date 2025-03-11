@@ -13,11 +13,6 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 // Constants
 const REFRESH_INTERVAL = 30000 // 30 seconds
-const LOCAL_STORAGE_KEYS = {
-  userName: localStorage.getItem('userName'),
-  userCode: localStorage.getItem('userCode'),
-  userId: localStorage.getItem('userId')
-}
 
 export default function Mood() {
   const [user, setUser] = useState({
@@ -35,14 +30,27 @@ export default function Mood() {
   })
 
   const [loading, setLoading] = useState(false)
+  const [localStorageKeys, setLocalStorageKeys] = useState({
+    userName: '',
+    userCode: '',
+    userId: ''
+  })
   const router = useRouter()
+
+  useEffect(() => {
+    setLocalStorageKeys({
+      userName: localStorage.getItem('userName') || '',
+      userCode: localStorage.getItem('userCode') || '',
+      userId: localStorage.getItem('userId') || ''
+    })
+  }, [])
 
   async function fetchMeData() {
     try {
       const { data, error } = await supabase
         .from('users')
         .select('*')
-        .eq('id', LOCAL_STORAGE_KEYS.userId)
+        .eq('id', localStorageKeys.userId)
         .single()
 
       console.log('DATA FOM SP', data)
@@ -77,7 +85,7 @@ export default function Mood() {
 
   async function fetchPartnerData() {
     try {
-      const relationalId = `${LOCAL_STORAGE_KEYS.userId}-${LOCAL_STORAGE_KEYS.userCode}`
+      const relationalId = `${localStorageKeys.userId}-${localStorageKeys.userCode}`
 
       const { data, error } = await supabase
         .from('users')
@@ -197,8 +205,10 @@ export default function Mood() {
   }
 
   useEffect(() => {
-    fetchMeData().then(() => fetchPartnerData())
-  }, [])
+    if (localStorageKeys.userId) {
+      fetchMeData().then(() => fetchPartnerData())
+    }
+  }, [localStorageKeys])
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
